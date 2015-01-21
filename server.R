@@ -6,7 +6,7 @@ inspections <- fromJSON(inspections.file)
 shinyServer(function(input, output,session) {
    react.rests <- reactive({
       #rests <- fromJSON(paste('https://health.data.ny.gov/resource/food-service-establishment-inspections-beginning-2005-active-.json?$select=facility&$group=facility&$order=facility&facility_city=',URLencode(input$city),'&$limit=900',sep=""))
-      rests <- subset(inspections,city==input$city,select=facility)
+      rests <- subset(inspections,city==input$city & description=="Food Service Establishment - Restaurant",select=facility)
       rests$facility <- as.factor(rests$facility)
       rests <- levels(rests$facility)
       updateSelectizeInput(session,"rest",choices=rests)
@@ -31,7 +31,7 @@ shinyServer(function(input, output,session) {
    })
    
    output$rest <- renderText({
-      if (input$rest>="1") paste("Food Service Facility: ",input$rest)
+      if (input$rest>="1") paste("Restaurant: ",input$rest)
    })
    output$date <- renderText({
       if (input$rest>="1") {
